@@ -38,6 +38,12 @@ const testJSON: DecisionTreeJson = {
       title: 'Plan E',
       value: 'E',
     },
+    {
+      node_id: 8,
+      type: 'end',
+      title: 'Plan F',
+      value: 'F',
+    },
   ],
   edges: [
     {
@@ -68,12 +74,24 @@ const testJSON: DecisionTreeJson = {
       edge_id: 3,
       fromNode: 5,
       toNode: 6,
-      title: 'B is true',
+      title: 'B is true AND C is true',
       comparison: {
-        type: 'comparison',
-        key: 'b',
-        operator: '==',
-        value: true,
+        type: 'comparisonGroup',
+        logicalOperator: '&&',
+        comparisons: [
+          {
+            type: 'comparison',
+            key: 'b',
+            operator: '==',
+            value: true,
+          },
+          {
+            type: 'comparison',
+            key: 'c',
+            operator: '==',
+            value: true,
+          },
+        ],
       },
     },
     {
@@ -88,6 +106,18 @@ const testJSON: DecisionTreeJson = {
         value: false,
       },
     },
+    {
+      edge_id: 5,
+      fromNode: 5,
+      toNode: 8,
+      title: 'C is false',
+      comparison: {
+        type: 'comparison',
+        key: 'c',
+        operator: '==',
+        value: false,
+      },
+    },
   ],
 };
 const nodes: TreeNode[] = testJSON.nodes;
@@ -95,7 +125,7 @@ const edges: TreeEdge[] = testJSON.edges;
 const decisionTree = new DecisionTree(nodes, edges);
 
 // evaluate the decision tree
-const data: TreeData = { a: 2, b: true };
+const data: TreeData = { a: 2, b: true, c: false };
 const result: EvaluationResult = decisionTree.evaluate(data);
 
 decisionTree.printTree();

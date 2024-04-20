@@ -24,7 +24,7 @@ export class Comparison {
     const contextValue = context[this.key];
 
     if (contextValue === undefined || this.value === undefined) {
-      return false;
+      throw new Error('Key or value not found in context');
     }
 
     switch (this.operator) {
@@ -60,7 +60,7 @@ export class ComparisonGroup {
 
   evaluate(context: TreeData): boolean {
     if (this.comparisons.length === 0) {
-      return false;
+      throw new Error('No comparisons found in group');
     }
     if (this.logicalOperator === '&&') {
       return this.comparisons.every((item: ComparisonItem) => {

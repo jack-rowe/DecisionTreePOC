@@ -59,15 +59,15 @@ export class DecisionTree {
             comparison.logicalOperator,
           ).evaluate(data);
         }
+        evalPath.push(
+          `${currentNode.title} -> ${edge.title} = ${
+            result ? 'true' : 'false'
+          }`,
+        );
 
         if (result) {
           passingEdge = edge;
           nextNode = this.nodes.find((node) => node.node_id === edge.toNode);
-          evalPath.push(
-            `${currentNode.title} -> ${passingEdge.title} = ${
-              result ? 'true' : 'false'
-            }`,
-          );
           // Exit loop if a passing edge is found
           break;
         }

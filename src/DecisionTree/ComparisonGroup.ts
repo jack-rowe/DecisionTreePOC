@@ -21,7 +21,11 @@ export class Comparison {
   }
 
   public evaluate(context: TreeData): boolean {
-    const contextValue = context[this.key];
+    if (this.key === '') {
+      throw new Error('Key not found in comparison');
+    }
+
+    const contextValue = context?.[this.key];
 
     if (contextValue === undefined || this.value === undefined) {
       throw new Error('Key or value not found in context');
@@ -41,7 +45,7 @@ export class Comparison {
       case '<=':
         return contextValue <= this.value;
       default:
-        return false;
+        throw new Error('Invalid operator');
     }
   }
 }

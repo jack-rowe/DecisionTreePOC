@@ -47,20 +47,23 @@ describe('Comparison', () => {
     expect(comp.evaluate({ age: 70 })).toBe(false);
     expect(comp.evaluate({ age: 60 })).toBe(true);
   });
-
-  test('returns false if context key is undefined', () => {
+  test('throws error if required data is undefined', () => {
     const comp = new Comparison('age', '==', 30);
-    expect(comp.evaluate({})).toBe(false);
+    expect(() => comp.evaluate({})).toThrow();
+    expect(() => comp.evaluate({ age: 30 })).not.toThrow();
+    expect(() => comp.evaluate({ country: 'Canada' })).toThrow();
   });
 
-  test('returns false if value is undefined', () => {
-    const comp = new Comparison('age', '==', undefined);
-    expect(comp.evaluate({ age: 30 })).toBe(false);
+  test('throws error if value is undefined', () => {
+    const comp = new Comparison('age', '==');
+    expect(() => comp.evaluate({ age: 4 })).toThrow();
+    const comp2 = new Comparison('', '==', 4);
+    expect(() => comp2.evaluate({ age: 4 })).toThrow();
   });
 
-  test('returns false if operator is invalid', () => {
+  test('throws error if operator is invalid', () => {
     const comp = new Comparison('age', 'invalid' as ComparisonOperator, 30);
-    expect(comp.evaluate({ age: 30 })).toBe(false);
+    expect(() => comp.evaluate({ age: 30 })).toThrow();
   });
 });
 
@@ -100,9 +103,12 @@ describe('ComparisonGroup', () => {
     expect(group.evaluate({ age: 70, name: 'Jane' })).toBe(true);
   });
 
-  test('returns false for empty comparison group', () => {
+  test('throw error for empty comparison group', () => {
     const group = new ComparisonGroup([], '&&');
-    expect(group.evaluate({ age: 20 })).toBe(false);
+    expect(() => group.evaluate({})).toThrow();
+
+    const group2 = new ComparisonGroup([], '||');
+    expect(() => group2.evaluate({})).toThrow();
   });
 
   test('returns false if no conditions match in || operator', () => {

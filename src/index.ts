@@ -1,21 +1,16 @@
-import { DecisionTree, TreeEdge, TreeNode } from './DecisionTree/DecisionTree';
-import {
-  DecisionTreeJson,
-  EvaluationResult,
-  TreeData,
-} from './DecisionTree/types';
+import { DecisionTree } from './DecisionTree/DecisionTree';
+import { EvaluationResult, TreeData } from './DecisionTree/types';
 import { UntreatedCLLJson } from './UntreatedCLLJson';
 
 // create a new decision tree
-const testJSON: DecisionTreeJson = UntreatedCLLJson;
-const nodes: TreeNode[] = testJSON.nodes;
-const edges: TreeEdge[] = testJSON.edges;
-const decisionTree = new DecisionTree(nodes, edges);
+const decisionTree = new DecisionTree(
+  UntreatedCLLJson.nodes,
+  UntreatedCLLJson.edges,
+);
 
-// evaluate the decision tree
 const data: TreeData = {
-  symptomatic: false,
-  asymptomatic: true,
+  symptomatic: true,
+  asymptomatic: false,
   mutatedIgHv: true,
   adverseGeneticMarkers: false,
   age: 85,
@@ -23,6 +18,7 @@ const data: TreeData = {
   _17pDeletion: false,
   TP53Mutation: false,
 };
+
 const result: EvaluationResult = decisionTree.evaluate(data);
 
 decisionTree.printTree();

@@ -1,4 +1,4 @@
-import { Comparison, ComparisonGroup } from './ComparisonGroup';
+import { SingleComparison, GroupComparison } from './ComparisonGroup';
 import { MalformedDecisionTreeError } from './DAGErrors';
 import { ComparisonItem, EvaluationResult, TreeData } from './types';
 
@@ -48,17 +48,18 @@ export class DecisionTree {
         }
         let result = false;
         if (comparison.type === 'comparison') {
-          result = new Comparison(
+          result = new SingleComparison(
             comparison.key,
             comparison.operator,
             comparison.value,
           ).evaluate(data);
         } else if (comparison.type === 'comparisonGroup') {
-          result = new ComparisonGroup(
+          result = new GroupComparison(
             comparison.comparisons,
             comparison.logicalOperator,
           ).evaluate(data);
         }
+
         evalPath.push(
           `${currentNode.title} -> ${edge.title} = ${
             result ? 'true' : 'false'
@@ -128,10 +129,16 @@ export class DecisionTree {
     };
 
     // Start printing from the root
+    console.log('\n');
+    console.log('\n');
+
     console.log('Decision Tree Structure:');
     if (this.root) {
       printNode(this.root);
     }
+
+    console.log('\n');
+    console.log('\n');
   }
 
   public printResult(result: EvaluationResult): void {
@@ -140,10 +147,14 @@ export class DecisionTree {
     console.log(`Node ID: ${result.node_id}`);
     console.log('Evaluation Path:');
     result.evalPath.forEach((step) => console.log(`    ${step}`));
+
+    console.log('\n');
+
     console.log('Data:');
     console.log(result.data);
   }
 }
+
 export class TreeNode {
   node_id: number;
   type: string;

@@ -5,7 +5,7 @@ import {
   TreeData,
 } from './types';
 
-export class Comparison {
+export class SingleComparison {
   key = '';
   operator: ComparisonOperator = '==';
   value: number | string | boolean | undefined;
@@ -52,7 +52,7 @@ export class Comparison {
   }
 }
 
-export class ComparisonGroup {
+export class GroupComparison {
   comparisons: ComparisonItem[];
   logicalOperator: LogicalOperator;
 
@@ -72,11 +72,13 @@ export class ComparisonGroup {
     if (this.logicalOperator === '&&') {
       return this.comparisons.every((item: ComparisonItem) => {
         if (item.type === 'comparison') {
-          return new Comparison(item.key, item.operator, item.value).evaluate(
-            context,
-          );
+          return new SingleComparison(
+            item.key,
+            item.operator,
+            item.value,
+          ).evaluate(context);
         } else if (item.type === 'comparisonGroup') {
-          return new ComparisonGroup(
+          return new GroupComparison(
             item.comparisons,
             item.logicalOperator,
           ).evaluate(context);
@@ -85,11 +87,13 @@ export class ComparisonGroup {
     } else if (this.logicalOperator === '||') {
       return this.comparisons.some((item: ComparisonItem) => {
         if (item.type === 'comparison') {
-          return new Comparison(item.key, item.operator, item.value).evaluate(
-            context,
-          );
+          return new SingleComparison(
+            item.key,
+            item.operator,
+            item.value,
+          ).evaluate(context);
         } else if (item.type === 'comparisonGroup') {
-          return new ComparisonGroup(
+          return new GroupComparison(
             item.comparisons,
             item.logicalOperator,
           ).evaluate(context);

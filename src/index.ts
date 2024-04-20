@@ -4,128 +4,25 @@ import {
   EvaluationResult,
   TreeData,
 } from './DecisionTree/types';
+import { UntreatedCLLJson } from './UntreatedCLLJson';
 
 // create a new decision tree
-const testJSON: DecisionTreeJson = {
-  nodes: [
-    {
-      node_id: 2,
-      type: 'root',
-      title: 'ROOT NODE',
-      value: '',
-    },
-    {
-      node_id: 4,
-      type: 'end',
-      title: 'Plan A',
-      value: 'A',
-    },
-    {
-      node_id: 5,
-      type: 'decision',
-      title: 'DECISION C',
-      value: 'C',
-    },
-    {
-      node_id: 6,
-      type: 'end',
-      title: 'Plan D',
-      value: 'D',
-    },
-    {
-      node_id: 7,
-      type: 'end',
-      title: 'Plan E',
-      value: 'E',
-    },
-    {
-      node_id: 8,
-      type: 'end',
-      title: 'Plan F',
-      value: 'F',
-    },
-  ],
-  edges: [
-    {
-      edge_id: 1,
-      fromNode: 2,
-      toNode: 4,
-      title: 'A Greater than 5',
-      comparison: {
-        type: 'comparison',
-        key: 'a',
-        operator: '>',
-        value: 5,
-      },
-    },
-    {
-      edge_id: 2,
-      fromNode: 2,
-      toNode: 5,
-      title: 'A Less than or Equal to 5',
-      comparison: {
-        type: 'comparison',
-        key: 'a',
-        operator: '<=',
-        value: 5,
-      },
-    },
-    {
-      edge_id: 3,
-      fromNode: 5,
-      toNode: 6,
-      title: 'B is true AND C is true',
-      comparison: {
-        type: 'comparisonGroup',
-        logicalOperator: '&&',
-        comparisons: [
-          {
-            type: 'comparison',
-            key: 'b',
-            operator: '==',
-            value: true,
-          },
-          {
-            type: 'comparison',
-            key: 'c',
-            operator: '==',
-            value: true,
-          },
-        ],
-      },
-    },
-    {
-      edge_id: 4,
-      fromNode: 5,
-      toNode: 7,
-      title: 'B is false',
-      comparison: {
-        type: 'comparison',
-        key: 'b',
-        operator: '==',
-        value: false,
-      },
-    },
-    {
-      edge_id: 5,
-      fromNode: 5,
-      toNode: 8,
-      title: 'C is false',
-      comparison: {
-        type: 'comparison',
-        key: 'c',
-        operator: '==',
-        value: false,
-      },
-    },
-  ],
-};
+const testJSON: DecisionTreeJson = UntreatedCLLJson;
 const nodes: TreeNode[] = testJSON.nodes;
 const edges: TreeEdge[] = testJSON.edges;
 const decisionTree = new DecisionTree(nodes, edges);
 
 // evaluate the decision tree
-const data: TreeData = { a: 2, b: true, c: false };
+const data: TreeData = {
+  symptomatic: false,
+  asymptomatic: true,
+  mutatedIgHv: true,
+  adverseGeneticMarkers: false,
+  age: 85,
+  CIRS: 7,
+  _17pDeletion: false,
+  TP53Mutation: false,
+};
 const result: EvaluationResult = decisionTree.evaluate(data);
 
 decisionTree.printTree();

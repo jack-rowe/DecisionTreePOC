@@ -12,12 +12,12 @@ export interface EvaluationResult {
   data: TreeData;
 }
 
-// interface ObsidianJson {
+// export interface ObsidianJson {
 //   nodes: ObsidianNode[];
 //   edges: ObsidianEdge[];
 // }
 
-// interface ObsidianEdge {
+// export interface ObsidianEdge {
 //   id: string;
 //   fromNode: string;
 //   fromSide: string;
@@ -27,7 +27,7 @@ export interface EvaluationResult {
 //   color?: string;
 // }
 
-// interface ObsidianNode {
+// export interface ObsidianNode {
 //   id: string;
 //   type: string;
 //   text: string; // contains all data for the node
@@ -37,16 +37,23 @@ export interface EvaluationResult {
 //   height: number;
 // }
 
+// export interface ObsidianNodeText {
+//   node_id: number;
+//   type: string;
+//   title: string;
+//   value: string;
+// }
+
 export type ComparisonOperator = '==' | '!=' | '>' | '<' | '>=' | '<=';
 export type LogicalOperator = '&&' | '||';
 
 // Base type for an item in the comparison hierarchy
 interface ComparisonBase {
-  type: 'comparison' | 'comparisonGroup';
+  type: 'comparison' | 'comparisonGroup' | 'passthrough';
 }
 
 // Type definition for a single comparison
-interface Comparison extends ComparisonBase {
+export interface Comparison extends ComparisonBase {
   type: 'comparison';
   key: string;
   operator: '==' | '!=' | '>' | '<' | '>=' | '<=';

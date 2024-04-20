@@ -20,6 +20,8 @@ export class Comparison {
     this.value = value ?? undefined;
   }
 
+  // Evaluate the comparison
+  // This will compare the value in the context with the value in the comparison
   public evaluate(context: TreeData): boolean {
     if (this.key === '') {
       throw new Error('Key not found in comparison');
@@ -61,7 +63,8 @@ export class ComparisonGroup {
     this.comparisons = comparisons;
     this.logicalOperator = logicalOperator;
   }
-
+  // Evaluate the comparison group
+  // This will recursively evaluate all comparisons and comparison groups in the group
   evaluate(context: TreeData): boolean {
     if (this.comparisons.length === 0) {
       throw new Error('No comparisons found in group');

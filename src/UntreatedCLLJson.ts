@@ -262,4 +262,3 @@ export const MissingData: TreeData = {
   _17pDeletion: false,
   TP53Mutation: false,
 };
-

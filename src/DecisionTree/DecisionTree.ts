@@ -1,5 +1,5 @@
-import { SingleComparison, GroupComparison } from './ComparisonGroup';
-import { MalformedDecisionTreeError } from './DAGErrors';
+import { GroupComparison, SingleComparison } from './ComparisonGroup';
+import { MalformedDecisionTreeError } from './DecisionTreeErrors';
 import { ComparisonItem, EvaluationResult, TreeData } from './types';
 
 export class DecisionTree {
@@ -41,11 +41,7 @@ export class DecisionTree {
 
       for (const edge of edgesFromCurrentNode) {
         const comparison = edge.comparison;
-        if (!comparison) {
-          throw new MalformedDecisionTreeError(
-            `No comparison found for edge ${edge.edge_id}`,
-          );
-        }
+
         let result = false;
         if (comparison.type === 'comparison') {
           result = new SingleComparison(
@@ -174,14 +170,14 @@ export class TreeEdge {
   fromNode: number;
   toNode: number;
   title: string;
-  comparison?: ComparisonItem;
+  comparison: ComparisonItem;
 
   constructor(
     edge_id: number,
     fromNode: number,
     toNode: number,
     title: string,
-    comparison?: ComparisonItem,
+    comparison: ComparisonItem,
   ) {
     this.edge_id = edge_id;
     this.fromNode = fromNode;

@@ -100,7 +100,7 @@ export class GroupComparison {
         }
       });
     } else {
-      return false;
+      throw new Error('Invalid logical operator');
     }
   }
 }

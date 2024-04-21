@@ -1,14 +1,10 @@
 import {
-  SingleComparison,
   GroupComparison,
+  SingleComparison,
 } from '../DecisionTree/ComparisonGroup';
-import {
-  ComparisonOperator,
-  LogicalOperator,
-  TreeData,
-} from '../DecisionTree/types';
+import { ComparisonOperator, LogicalOperator } from '../DecisionTree/types';
 
-describe('Comparison', () => {
+describe('SingleComparison basic comparisons', () => {
   test('evaluates == operator correctly', () => {
     const comp = new SingleComparison('age', '==', 30);
     expect(comp.evaluate({ age: 30 })).toBe(true);
@@ -50,6 +46,9 @@ describe('Comparison', () => {
     expect(comp.evaluate({ age: 70 })).toBe(false);
     expect(comp.evaluate({ age: 60 })).toBe(true);
   });
+});
+
+describe('SingleComparison error handling', () => {
   test('throws error if required data is undefined', () => {
     const comp = new SingleComparison('age', '==', 30);
     expect(() => comp.evaluate({})).toThrow();
@@ -74,7 +73,7 @@ describe('Comparison', () => {
   });
 });
 
-describe('ComparisonGroup', () => {
+describe('GroupComparison basic comparisons', () => {
   test('evaluates && operator correctly with all true', () => {
     const group = new GroupComparison(
       [
@@ -110,14 +109,6 @@ describe('ComparisonGroup', () => {
     expect(group.evaluate({ age: 70, name: 'Jane' })).toBe(true);
   });
 
-  test('throw error for empty comparison group', () => {
-    const group = new GroupComparison([], '&&');
-    expect(() => group.evaluate({})).toThrow();
-
-    const group2 = new GroupComparison([], '||');
-    expect(() => group2.evaluate({})).toThrow();
-  });
-
   test('returns false if no conditions match in || operator', () => {
     const group = new GroupComparison(
       [
@@ -148,5 +139,62 @@ describe('ComparisonGroup', () => {
     expect(nestedGroup.evaluate({ age: 15, name: 'Jane' })).toBe(true);
     expect(nestedGroup.evaluate({ age: 20, name: 'Jane' })).toBe(true);
     expect(nestedGroup.evaluate({ age: 15, name: 'John' })).toBe(false);
+  });
+
+  test('handles double nested ComparisonGroup correctly', () => {
+    const nestedGroup = new GroupComparison(
+      [
+        {
+          type: 'comparisonGroup',
+          comparisons: [
+            { type: 'comparison', key: 'age', operator: '>=', value: 18 },
+            {
+              type: 'comparisonGroup',
+              comparisons: [
+                {
+                  type: 'comparison',
+                  key: 'name',
+                  operator: '==',
+                  value: 'Jane',
+                },
+                {
+                  type: 'comparison',
+                  key: 'name',
+                  operator: '==',
+                  value: 'John',
+                },
+              ],
+              logicalOperator: '||',
+            },
+          ],
+          logicalOperator: '&&',
+        },
+      ],
+      '||',
+    );
+    expect(nestedGroup.evaluate({ age: 18, name: 'John' })).toBe(true);
+    expect(nestedGroup.evaluate({ age: 20, name: 'Jane' })).toBe(true);
+    expect(nestedGroup.evaluate({ age: 15, name: 'Jane' })).toBe(false);
+    expect(nestedGroup.evaluate({ age: 20, name: 'Peter' })).toBe(false);
+  });
+});
+
+describe('GroupComparison error handling', () => {
+  test('throw error for empty comparison group', () => {
+    const group = new GroupComparison([], '&&');
+    expect(() => group.evaluate({})).toThrow();
+
+    const group2 = new GroupComparison([], '||');
+    expect(() => group2.evaluate({})).toThrow();
+  });
+
+  test('throws error for invalid logical operator', () => {
+    const invalidOpGroup = new GroupComparison(
+      [{ type: 'comparison', key: 'age', operator: '>=', value: 18 }],
+      'invalid' as LogicalOperator, // Force an invalid operator to simulate the error condition
+    );
+    expect(() => invalidOpGroup.evaluate({ age: 20 })).toThrow(
+      'Invalid logical operator',
+    );
   });
 });

@@ -152,16 +152,28 @@ describe('GroupComparison basic comparisons', () => {
               type: 'comparisonGroup',
               comparisons: [
                 {
-                  type: 'comparison',
-                  key: 'name',
-                  operator: '==',
-                  value: 'Jane',
+                  type: 'comparisonGroup',
+                  comparisons: [
+                    {
+                      type: 'comparison',
+                      key: 'name',
+                      operator: '==',
+                      value: 'John',
+                    },
+                    {
+                      type: 'comparison',
+                      key: 'age',
+                      operator: '>',
+                      value: '18',
+                    },
+                  ],
+                  logicalOperator: '&&',
                 },
                 {
                   type: 'comparison',
                   key: 'name',
                   operator: '==',
-                  value: 'John',
+                  value: 'Jane',
                 },
               ],
               logicalOperator: '||',
@@ -172,7 +184,7 @@ describe('GroupComparison basic comparisons', () => {
       ],
       '||',
     );
-    expect(nestedGroup.evaluate({ age: 18, name: 'John' })).toBe(true);
+    expect(nestedGroup.evaluate({ age: 19, name: 'John' })).toBe(true);
     expect(nestedGroup.evaluate({ age: 20, name: 'Jane' })).toBe(true);
     expect(nestedGroup.evaluate({ age: 15, name: 'Jane' })).toBe(false);
     expect(nestedGroup.evaluate({ age: 20, name: 'Peter' })).toBe(false);
